@@ -113,22 +113,29 @@ pros::delay(20);
 
 }
 
-
-void backAway(){
-		
-
+void outtake_and_backup() {
+	intakeMotors.moveVelocity(-69);
+	drive.moveVelocity(-100);
 }
 
+void backAway(){
+		pros::Task move_away(outtake_and_backup, &text, "backAway");
+		//&text?? need to figure that out + priority
+}
 
 void autonomous() {
+deploy();
+
+//movements here
 
 
+stackDeposit();
+
+//movements here
 
 
-
-
-
-
+backAway();
+//end of program
 }
 
 /**
