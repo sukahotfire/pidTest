@@ -1,4 +1,5 @@
 #include "main.h"
+#include "Util/devices.hpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -58,7 +59,77 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+
+void deploy(){
+
+		intakeMotors.moveVelocity(100);
+		intakeMotors.moveVelocity(-100);
+		lift.moveVelocity(100);
+		lift.moveVelocity(-100);
+		pros::delay(20);
+
+}
+
+void stackDeposit (){
+
+float targetValue;
+float currentValue;
+float kP;
+float kI;
+float kD;
+float lastError;
+float totalError=0;
+
+bool trayIsUp = true;
+
+while (trayIsUp) {
+
+if (trayIsUp){
+float error = targetValue - currentValue;
+float deriv = error - lastError;
+
+if (error < abs(200) && error != 0) {
+totalError+=error;
+} else {
+	totalError = 0;
+}
+float pProp = error * kP;
+float pDeriv = deriv * kD;
+float pInteg = totalError * kI;
+if (pInteg > 50){
+	pInteg = 50;
+}
+float motorPower = pProp + pDeriv + pInteg;
+/* input for motor velocity = motorPower */
+lastError = error;
+lift.moveVelocity(motorPower);
+pros::delay(20);
+} else {
+	lift.moveVelocity(0);
+}
+
+
+}
+
+}
+
+
+void backAway(){
+		
+
+}
+
+
+void autonomous() {
+
+
+
+
+
+
+
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
